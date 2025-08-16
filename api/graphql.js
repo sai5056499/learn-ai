@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import { createHandler } from 'graphql-http/lib/use/express';
-import { buildSchema } from 'graphql';
-import { GoogleGenerativeAI } from '@google/genai';
+const express = require('express');
+const cors = require('cors');
+const { createHandler } = require('graphql-http/lib/use/express');
+const { buildSchema } = require('graphql');
+const { GoogleGenerativeAI } = require('@google/genai');
 
 const app = express();
 
@@ -481,4 +481,4 @@ app.get('/health', (req, res) => {
 });
 
 // Export for Vercel
-export default app;
+module.exports = app;
