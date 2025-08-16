@@ -1,11 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Course, Flashcard, LearningItem, KnowledgeLevel, ContentBlock, PracticeProblem, ChatMessage, QuizData, TestResult, Recommendation, RelatedTopic, InterviewQuestion, Module, MindMapNode, PracticeSession, Project, ProjectStep, LearningGoal, LearningStyle, CourseSource } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyAIOA0lxZ98ITYtBhe174Ygl7GmfiJkmYYb';
+
+if (!apiKey) {
+    throw new Error("VITE_GEMINI_API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey });
 
 // --- SCHEMAS ---
 const quizSchema = {
