@@ -53,7 +53,7 @@ function App() {
   const [courseForInterviewPrep, setCourseForInterviewPrep] = useState<Course | null>(null);
   
   const { theme, isDark } = useTheme();
-  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading, isSkipped } = useAuth();
   const {
       activeCourse,
       error,
@@ -106,13 +106,24 @@ function App() {
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center">
-        <LoadingSpinnerIcon className="w-12 h-12 text-[var(--color-primary)]" />
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: 'var(--color-background)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <LoadingSpinnerIcon style={{
+          width: '3rem',
+          height: '3rem',
+          color: 'var(--color-primary)'
+        }} />
       </div>
     );
   }
 
-  if (!isAuthenticated) {
+  // Show auth page only if not authenticated AND not skipped
+  if (!isAuthenticated && !isSkipped) {
     return <AuthPage />;
   }
   
@@ -123,7 +134,14 @@ function App() {
     
     if (activeTask) {
         return (
-            <div className="flex flex-col items-center justify-center w-full h-full">
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%'
+            }}>
                 <LoadingDisplay 
                     task={activeTask} 
                     onCancel={() => {
@@ -185,7 +203,13 @@ function App() {
   return (
     <>
     {isDark && <BackgroundGlow />}
-    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)] font-sans flex">
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: 'var(--color-background)',
+      color: 'var(--color-foreground)',
+      fontFamily: 'sans-serif',
+      display: 'flex'
+    }}>
       <Sidebar 
         view={view} 
         setView={setView} 
@@ -193,13 +217,37 @@ function App() {
         onClose={() => setIsSidebarOpen(false)}
         onOpenSettings={() => setIsSettingsModalOpen(true)} 
       />
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header className="lg:hidden p-4 flex items-center justify-between sticky top-0 bg-[var(--color-background)]/80 backdrop-blur-sm z-30 border-b border-[var(--color-border)]">
-          <button onClick={() => setIsSidebarOpen(true)} className="p-2">
-            <Bars3Icon className="w-6 h-6"/>
+      <div style={{
+        flex: '1',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        overflowY: 'auto'
+      }}>
+        <header style={{
+          display: 'none',
+          padding: '1rem',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'rgba(var(--color-background), 0.8)',
+          backdropFilter: 'blur(8px)',
+          zIndex: 30,
+          borderBottom: '1px solid var(--color-border)'
+        }} className="lg:hidden">
+          <button onClick={() => setIsSidebarOpen(true)} style={{ padding: '0.5rem' }}>
+            <Bars3Icon style={{ width: '1.5rem', height: '1.5rem' }}/>
           </button>
         </header>
-        <main className="w-full flex-grow flex flex-col items-center p-4 sm:p-6 lg:p-8">
+        <main style={{
+          width: '100%',
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '1rem'
+        }} className="w-full flex-grow flex flex-col items-center p-4 sm:p-6 lg:p-8">
             {renderContent()}
         </main>
       </div>

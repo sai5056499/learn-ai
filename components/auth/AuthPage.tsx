@@ -6,7 +6,7 @@ import { AnimatedLearnAIIcon } from '../common/Icons';
 declare const google: any;
 
 const AuthPage: React.FC = () => {
-    const { login } = useAuth();
+    const { login, skipAuth } = useAuth();
     const googleButtonRef = useRef<HTMLDivElement>(null);
     const [showEmailForm, setShowEmailForm] = useState(false);
     const [email, setEmail] = useState('');
@@ -38,6 +38,10 @@ const AuthPage: React.FC = () => {
         if (email && name) {
             login({ email, name });
         }
+    };
+
+    const handleSkipAuth = () => {
+        skipAuth();
     };
 
     const isGoogleConfigured = !GOOGLE_CLIENT_ID.startsWith('YOUR');
@@ -82,7 +86,7 @@ const AuthPage: React.FC = () => {
                     fontSize: '1rem',
                     color: 'var(--color-muted-foreground)'
                 }}>
-                    Your personal AI learning companion. Sign in to begin generating courses and tracking your progress.
+                    Your personal AI learning companion. Sign in to save progress, or continue without signing in.
                 </p>
                 
                 <div style={{
@@ -191,20 +195,39 @@ const AuthPage: React.FC = () => {
                             </button>
                         </form>
                     ) : (
-                        <button
-                            onClick={() => setShowEmailForm(true)}
-                            style={{
-                                width: '100%',
-                                padding: '0.75rem 1rem',
-                                border: '1px solid var(--color-border)',
-                                borderRadius: '0.5rem',
-                                backgroundColor: 'transparent',
-                                color: 'var(--color-foreground)',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Continue with Email
-                        </button>
+                        <>
+                            <button
+                                onClick={() => setShowEmailForm(true)}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.75rem 1rem',
+                                    border: '1px solid var(--color-border)',
+                                    borderRadius: '0.5rem',
+                                    backgroundColor: 'transparent',
+                                    color: 'var(--color-foreground)',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Continue with Email
+                            </button>
+                            
+                            {/* Skip Authentication Button */}
+                            <button
+                                onClick={handleSkipAuth}
+                                style={{
+                                    width: '100%',
+                                    padding: '0.75rem 1rem',
+                                    backgroundColor: 'transparent',
+                                    color: 'var(--color-muted-foreground)',
+                                    border: '1px dashed var(--color-border)',
+                                    borderRadius: '0.5rem',
+                                    cursor: 'pointer',
+                                    fontSize: '0.875rem'
+                                }}
+                            >
+                                Continue without Sign-In
+                            </button>
+                        </>
                     )}
                     
                     {/* Configuration Notice */}
@@ -215,7 +238,7 @@ const AuthPage: React.FC = () => {
                             maxWidth: '20rem',
                             marginTop: '1rem'
                         }}>
-                            Google Sign-In is not configured. You can still use email sign-in, or add your Client ID in `components/auth/config.ts`.
+                            Google Sign-In is not configured. You can still use email sign-in or continue without signing in.
                         </p>
                     )}
                 </div>

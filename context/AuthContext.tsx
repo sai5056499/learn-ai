@@ -6,8 +6,10 @@ interface AuthContextType {
     isAuthenticated: boolean;
     user: User | null;
     isLoading: boolean;
+    isSkipped: boolean;
     login: (credential: string) => void;
     logout: () => void;
+    skipAuth: () => void;
     updateUserStats: (stats: { xp: number, level: number }) => void;
 }
 
@@ -16,10 +18,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSkipped, setIsSkipped] = useState(false);
 
     const logout = useCallback(() => {
         localStorage.removeItem('learnai-user-credential');
         setUser(null);
+        setIsSkipped(false);
+    }, []);
+
+    const skipAuth = useCallback(() => {
+        setIsSkipped(true);
+        setIsLoading(false);
     }, []);
 
     const processCredential = useCallback((credential: string) => {
@@ -36,6 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 achievements: []
             };
             setUser(userData);
+            setIsSkipped(false);
             localStorage.setItem('learnai-user-credential', credential);
         } catch (error) {
             console.error("Failed to decode JWT or process user data", error);
@@ -67,10 +77,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated,
         user,
         isLoading,
+        isSkipped,
         login,
         logout,
+        skipAuth,
         updateUserStats,
-    }), [isAuthenticated, user, isLoading, login, logout, updateUserStats]);
+    }), [isAuthenticated, user, isLoading, isSkipped, login, logout, skipAuth, updateUserStats]);
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
